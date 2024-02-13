@@ -49,4 +49,7 @@ RUN python -m nltk.downloader stopwords \
     && rm -rf /root/.cache
 
 EXPOSE 5001
-CMD ["./run.sh"]
+
+ENTRYPOINT ["/bin/bash", "-c"]
+CMD ["nohup java -jar jars/tika-server-standard-nlm-modified-2.4.1_v6.jar > /dev/null 2>&1 & python -m nlm_ingestor.ingestion_daemon"]
+# CMD ["./run.sh"]
