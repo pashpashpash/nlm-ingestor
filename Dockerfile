@@ -48,5 +48,5 @@ RUN python -m nltk.downloader stopwords \
     # Cleanup pip cache
     && rm -rf /root/.cache
 
-EXPOSE 5001
+EXPOSE 8080
 CMD ["./run.sh"]
