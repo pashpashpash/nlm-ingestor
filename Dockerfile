@@ -49,5 +49,4 @@ RUN python -m nltk.downloader stopwords \
     && rm -rf /root/.cache
 
 EXPOSE 8080 
-# yolo
 CMD ["./run.sh"]
