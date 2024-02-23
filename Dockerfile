@@ -35,13 +35,15 @@ COPY requirements.txt .
 RUN pip install --upgrade pip setuptools \
     && pip install -r requirements.txt
 
-# Application stage
-FROM python:3.11-bookworm as final
+# Application stage, now based on 'tesseract' which includes Java
+FROM tesseract as final
 ENV APP_HOME /app
 WORKDIR ${APP_HOME}
 
 ENV NLTK_DATA /root/nltk_data
 
+# Since 'tesseract' already includes everything from 'base' and the additional tesseract installation,
+# and 'python-deps' has the Python dependencies, we ensure Java and all dependencies are included.
 COPY --from=python-deps /root/.cache /root/.cache
 COPY --from=python-deps /usr/local /usr/local
 COPY . ./
