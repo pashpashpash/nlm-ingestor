@@ -39,11 +39,14 @@ RUN pip install --upgrade pip setuptools \
 FROM python:3.11-bookworm as final
 ENV APP_HOME /app
 WORKDIR ${APP_HOME}
+
+ENV NLTK_DATA /root/nltk_data
+
 COPY --from=python-deps /root/.cache /root/.cache
 COPY --from=python-deps /usr/local /usr/local
 COPY . ./
 RUN python -m nltk.downloader stopwords \
-    && python -m nltk.downloader punkt \
+    && python -m nltk.downloader punkt -d /root/nltk_data \
     && chmod +x run.sh \
     # Cleanup pip cache
     && rm -rf /root/.cache
