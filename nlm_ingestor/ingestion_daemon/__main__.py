@@ -14,6 +14,8 @@ app = Flask(__name__)
 logger = logging.getLogger(__name__)
 logger.setLevel(cfg.log_level())
 
+SECRET = "wuuP7cTAOIq8uAMZPT5R5g"
+
 @app.route('/')
 def health_check():
     return 'Service is up', 200
@@ -23,6 +25,9 @@ def parse_document(
     file=None,
     render_format: str = "all",
 ):
+    secret = request.args.get('secret', '')
+    if secret != SECRET:
+        return make_response(jsonify({"status": "fail", "reason": "Invalid secret"}), 403)
     render_format = request.args.get('renderFormat', 'all')
     use_new_indent_parser = request.args.get('useNewIndentParser', 'no')
     apply_ocr = request.args.get('applyOcr', 'no')
