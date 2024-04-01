@@ -3,6 +3,7 @@ import nlm_ingestor.ingestion_daemon.config as cfg
 import os
 import tempfile
 import traceback
+import time
 from flask import Flask, request, jsonify, make_response
 from werkzeug.utils import secure_filename
 from nlm_ingestor.ingestor import ingestor_api
@@ -25,6 +26,7 @@ def parse_document(
     file=None,
     render_format: str = "all",
 ):
+    start_time = time.time()
     secret = request.args.get('secret', '')
     if secret != SECRET:
         return make_response(jsonify({"status": "fail", "reason": "Invalid secret"}), 403)
@@ -58,6 +60,7 @@ def parse_document(
         )
         if tmp_file and os.path.exists(tmp_file):
             os.unlink(tmp_file)
+        print(f"[Ingestor] Total request proccessing latency: {time.time() - start_time}s")
         return make_response(
             jsonify({"status": ingest_status, "return_dict": return_dict or {}}),
         )
@@ -73,6 +76,7 @@ def parse_document(
     finally:
         if tmp_file and os.path.exists(tmp_file):
             os.unlink(tmp_file)
+    print(f"[Ingestor] Total request proccessing latency: {time.time() - start_time}s")
     return make_response(jsonify({"status": status, "reason": msg}), rc)
 
 def main():
